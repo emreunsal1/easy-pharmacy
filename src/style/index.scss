@@ -1,0 +1,45 @@
+@import './card.scss';
+@import './header.scss';
+
+*,*::before,*::after{
+  box-sizing: border-box;
+}
+
+
+body{
+  background-color: #F4F6FC;
+  padding: 0;
+  margin: 0;
+  .container{
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 50px;
+    .nearest-pharmacy{
+      .title{
+        margin-bottom: 5px;
+        font-size: 14px;
+        line-height: 1.4;
+        font-weight: bold;
+      }
+    }
+    .pharmacy-list{
+      .title{
+        margin-bottom: 5px;
+        font-size: 14px;
+        line-height: 1.4;
+        font-weight: bold;
+        margin-top: 50px;
+      }
+    }
+    @media only screen and (max-width: 600px) {
+      width: 100%;
+    }
+  }
+  .loading-place{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 300px;
+  }
+}
