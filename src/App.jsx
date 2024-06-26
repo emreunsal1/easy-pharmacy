@@ -3,73 +3,71 @@ import { getUserLocation, getPharmacy } from "./services/api";
 import Card from "./components/Card";
 import Header from "./components/Header";
 import infinityGif from "./assets/infinity.gif";
+import information from './assets/information.png';
+import { haversine } from "./utils";
 
 function App() {
   const [pharmacys, setPharmacys] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-  const [nearestPharmacy, setNearestPharmacy] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const findNearest = () => {
+    if (!pharmacys.length || !userLocation) {
+      return null;
+    }
     let minDist = Infinity;
-    let nearestPharmacy = null;
+    let nearestPharmacy = null; //düzenle
 
     pharmacys.forEach((pharmacy) => {
-      const pharmacyLoc = pharmacy.loc.split(",");
       const dist = haversine(
         userLocation.lat,
         userLocation.lon,
-        pharmacyLoc[0],
-        pharmacyLoc[1]
+        pharmacy.latitude,
+        pharmacy.longitude
       );
       if (dist < minDist) {
         minDist = dist;
         nearestPharmacy = pharmacy;
       }
     });
-
-    setNearestPharmacy(nearestPharmacy);
-    setLoading(false);
+    return nearestPharmacy;
   };
+  const nearestPharmacy = findNearest();
 
   useEffect(() => {
     triggerPharmacy();
   }, []);
 
-  useEffect(() => {
-    if (pharmacys.length && userLocation) {
-      findNearest();
-    }
-  }, [pharmacys, userLocation]);
 
-  const haversine = (currLat, currLon, lat2, lon2) => {
-    const R = 6371; // Dünya'nın yarıçapı (km)
-    const dLat = deg2rad(lat2 - currLat);
-    const dLon = deg2rad(lon2 - currLon);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(currLat)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // km
-    return distance;
-  };
-
-  const deg2rad = (deg) => {
-    return deg * (Math.PI / 180);
-  };
+  
 
   const triggerPharmacy = async () => {
-    const userResult = await getUserLocation();
-    setUserLocation(userResult);
-    const results = await getPharmacy(userResult.city, userResult.district);
-    setPharmacys(results);
+    try {
+      const userResult = await getUserLocation();
+      setUserLocation(userResult);
+      const results = await getPharmacy(userResult.city, userResult.district);
+      setPharmacys(results);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
+
 
   return (
     <>
+      
+      {!loading && !userLocation && (
+        <div className="info-popup">
+          <div className="info-popup-container">
+            <div className="icon-wrapper">
+              <img src={information}></img>
+            </div>
+            <div className="message">Lütfen ayarlardan konumu açınız ve sayfayı yenileyiniz.</div>
+            <div className="okay-button" onClick={() => location.reload()}>Tamam</div>
+          </div>
+        </div>
+       )} 
       <Header />
       {loading && (
         <div className="loading-place">
@@ -78,7 +76,7 @@ function App() {
           </div>
         </div>
       )}
-      {!loading && (
+      {pharmacys.length > 0 && (
         <div className="container">
           <div className="nearest-pharmacy">
             <div className="title">Size En Yakın Nöbetçi Eczane</div>

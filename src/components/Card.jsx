@@ -16,8 +16,8 @@ export default function Card({ data }) {
         </div>
         <div className='content'>
           <div className='card-title'>Eczane Adı</div>
-          <div className='name'>{ data.name } ECZANESİ</div>
-          <div className='phone'>{ data.phone }</div>
+          <div className='name'>{ data.pharmacyName }</div>
+          <div className='phone'><a target='_blank' href={`tel:+90${data.phone}`}>{ data.phone } </a></div>
           </div>
         </div>
         <div className='address'>
@@ -25,7 +25,7 @@ export default function Card({ data }) {
           <div className='desc'>{data.address}</div>
         </div>
         <div className='action'>
-          <div className='action-button' onClick={()=>actionButtonclickHandler(data.loc)}>
+          <div className='action-button' onClick={()=>actionButtonclickHandler(data.latitude + ',' + data.longitude)}>
             Konuma Git
           </div>
         </div>

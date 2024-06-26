@@ -42,11 +42,14 @@ getUserLocation().catch((error) => {
 });
 
 export const getPharmacy = async (city, district) => {
-  const response = await axios.get(`${apiUrl}/?ilce=${district}&il=${city}`, {
+  const convertCity = city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, 'i');
+  const convertDistrict = district.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, 'i');
+  const response = await axios.get(`${apiUrl}/pharmacies-on-duty?city=${convertCity}&district=${convertDistrict}`, {
     headers: {
-      authorization: apiKey,
+      Authorization: `Bearer ${apiKey}`,
     },
   });
-  const data = response.data;
-  return data.result;
+  const data = response.data.data;
+  return data;
 };
+
