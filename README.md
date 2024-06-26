@@ -25,3 +25,7 @@ With npm:
 ```
 npm run start
 ```
+
+### DEMO 🔴
+
+https://easy-pharmacy.vercel.app/
