@@ -42,14 +42,39 @@ getUserLocation().catch((error) => {
 });
 
 export const getPharmacy = async (city, district) => {
-  const convertCity = city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, 'i');
-  const convertDistrict = district.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, 'i');
-  const response = await axios.get(`${apiUrl}/pharmacies-on-duty?city=${convertCity}&district=${convertDistrict}`, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-  });
+  const convertCity = turkishToEnglish(city.toLowerCase());
+  const convertDistrict = turkishToEnglish(district.toLowerCase())
+  const response = await axios.get(
+    `${apiUrl}/pharmacies-on-duty?city=${convertCity}&district=${convertDistrict}`,
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
+  );
   const data = response.data.data;
   return data;
 };
+
+function turkishToEnglish(str) {
+  const turkishChars = {
+    Ç: "C",
+    Ö: "O",
+    Ş: "S",
+    İ: "I",
+    Ğ: "G",
+    Ü: "U",
+    ç: "c",
+    ö: "o",
+    ş: "s",
+    ı: "i",
+    ğ: "g",
+    ü: "u",
+  };
+
+  return str
+    .split("")
+    .map((char) => turkishChars[char] || char)
+    .join("");
+}
 

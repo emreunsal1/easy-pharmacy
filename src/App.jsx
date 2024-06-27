@@ -45,7 +45,7 @@ function App() {
     try {
       const userResult = await getUserLocation();
       setUserLocation(userResult);
-      const results = await getPharmacy(userResult.city, userResult.district);
+      const results = await getPharmacy('İzmir','Karşıyaka');
       setPharmacys(results);
       setLoading(false);
     } catch (error) {
